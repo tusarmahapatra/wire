@@ -45,22 +45,15 @@ body{
   border-bottom:1px solid var(--rule);
 }
 
-/* ---------- masthead ---------- */
-.masthead{display:flex;align-items:baseline;gap:14px;padding:34px 0 16px}
+/* ---------- masthead: one compact bar ---------- */
+.masthead{display:flex;align-items:center;gap:12px;padding:14px 0;flex-wrap:wrap}
 .mark{
   font:700 13px/1 "IBM Plex Mono",monospace;letter-spacing:.22em;
   text-transform:uppercase;color:var(--paper);background:var(--indigo);
   padding:8px 10px;border-radius:2px;
 }
-.masthead h1{
-  font:600 30px/1 "Newsreader",Georgia,serif;margin:0;letter-spacing:-.01em;
-}
-.masthead .sub{
-  margin-left:auto;font:400 11px/1 "IBM Plex Mono",monospace;
-  letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
-  display:flex;align-items:center;gap:12px;
-}
-.dot{width:7px;height:7px;border-radius:50%;background:#2E9E6B;display:inline-block}
+.masthead h1{margin:0;font:600 20px/1 "Newsreader",Georgia,serif}
+.dot{width:7px;height:7px;border-radius:50%;background:#2E9E6B;display:inline-block;flex:none}
 .dot.stale{background:var(--marigold)}
 .dot.bad{background:#C0392B}
 .ghost{
@@ -69,17 +62,43 @@ body{
   text-transform:uppercase;padding:6px 9px;border-radius:2px;cursor:pointer;
 }
 .ghost:hover{border-color:var(--indigo);color:var(--indigo)}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
+/* the right-aligned icon cluster: status, search, filters, settings */
+.bar-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+.action-wrap{position:relative}
+.status-pill{
+  display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--rule);
+  border-radius:999px;padding:5px 10px 5px 8px;cursor:pointer;color:var(--mute);
+  font:400 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;white-space:nowrap;
+}
+.status-pill:hover{border-color:var(--indigo);color:var(--indigo)}
+.icon-btn{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:34px;height:34px;flex:none;background:none;border:1px solid var(--rule);
+  border-radius:2px;color:var(--mute);cursor:pointer;padding:0;
+}
+.icon-btn:hover,.icon-btn[aria-expanded="true"]{border-color:var(--indigo);color:var(--indigo)}
+.icon-btn svg{width:17px;height:17px;stroke:currentColor;fill:none}
+.badge{
+  position:absolute;top:-5px;right:-5px;min-width:15px;height:15px;padding:0 3px;
+  background:var(--marigold);color:var(--paper);border-radius:999px;
+  font:600 9px/15px "IBM Plex Mono",monospace;text-align:center;
+}
 
 /* ---------- tabs ---------- */
-nav.primary{display:flex;gap:0;border-bottom:1px solid var(--rule)}
+nav.primary{display:flex;gap:0}
 nav.primary button{
-  background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;
-  padding:12px 2px;margin-right:28px;cursor:pointer;color:var(--mute);
-  font:600 15px/1 "Public Sans",sans-serif;letter-spacing:.01em;
+  background:none;border:0;border-bottom:2px solid transparent;
+  padding:8px 2px;margin-right:22px;cursor:pointer;color:var(--mute);
+  font:600 15px/1 "Public Sans",sans-serif;letter-spacing:.01em;white-space:nowrap;
 }
 nav.primary button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--indigo)}
 
-nav.secondary{display:flex;flex-wrap:wrap;gap:8px;padding:14px 0 0}
+nav.secondary{display:flex;flex-wrap:wrap;gap:8px;padding:10px 0 12px}
 nav.secondary button{
   background:none;border:1px solid var(--rule);border-radius:999px;
   padding:6px 13px;cursor:pointer;color:var(--mute);
@@ -90,26 +109,38 @@ nav.secondary button[aria-selected="true"]{
   box-shadow:inset 0 0 0 1px var(--indigo);
 }
 
-/* ---------- toolbar ---------- */
-.toolbar{display:flex;align-items:center;gap:10px;padding:16px 0 6px;flex-wrap:wrap}
-.toolbar input{
-  flex:1;min-width:180px;background:var(--panel);color:var(--ink);
-  border:1px solid var(--rule);border-radius:2px;padding:9px 11px;
-  font:400 14px/1 "Public Sans",sans-serif;
+/* ---------- inline search row (toggled by the search icon) ---------- */
+.search-row{display:flex;gap:8px;padding:10px 0;border-top:1px solid var(--rule)}
+.search-row[hidden]{display:none}
+.search-row input{
+  flex:1;background:var(--panel);color:var(--ink);border:1px solid var(--rule);
+  border-radius:2px;padding:9px 11px;font:400 14px/1 "Public Sans",sans-serif;
 }
-.toolbar input:focus{outline:2px solid var(--indigo);outline-offset:-1px}
-.toolbar select{
-  background:var(--panel);color:var(--ink);
-  border:1px solid var(--rule);border-radius:2px;padding:9px 11px;
-  font:400 13px/1 "Public Sans",sans-serif;max-width:220px;
+.search-row input:focus{outline:2px solid var(--indigo);outline-offset:-1px}
+
+/* ---------- filters / settings popovers ---------- */
+.popover{
+  position:absolute;top:calc(100% + 8px);right:0;z-index:30;
+  background:var(--panel);border:1px solid var(--rule);border-radius:4px;
+  box-shadow:0 8px 24px rgba(17,22,33,.14);padding:14px;min-width:240px;
+  display:flex;flex-direction:column;gap:10px;
 }
-.toolbar select:focus{outline:2px solid var(--indigo);outline-offset:-1px}
-.toolbar label{
-  display:flex;align-items:center;gap:7px;color:var(--mute);
-  font:400 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;
-  cursor:pointer;user-select:none;
+.popover[hidden]{display:none}
+.popover label{
+  display:flex;flex-direction:column;gap:5px;color:var(--mute);
+  font:400 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;
 }
-.tagbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 4px}
+.popover select{
+  background:var(--paper);color:var(--ink);border:1px solid var(--rule);
+  border-radius:2px;padding:8px 10px;font:400 13px/1 "Public Sans",sans-serif;
+}
+.popover select:focus{outline:2px solid var(--indigo);outline-offset:-1px}
+.popover .checkbox-row{
+  flex-direction:row;align-items:center;gap:7px;cursor:pointer;user-select:none;
+}
+.popover .ghost{width:100%;text-align:left}
+.popover-backdrop{display:none}
+.tagbar{display:flex;flex-wrap:wrap;gap:6px}
 .tagbar button{
   background:none;border:1px solid var(--rule);border-radius:2px;cursor:pointer;
   padding:4px 8px;color:var(--mute);
@@ -244,15 +275,25 @@ kbd{border:1px solid var(--rule);border-radius:2px;padding:1px 5px;font-family:i
 
 @media(max-width:560px){
   .wrap{padding:0 14px 96px}
-  .masthead{flex-wrap:wrap;padding-top:24px}
-  .masthead .sub{margin-left:0;width:100%;flex-wrap:wrap;row-gap:8px}
+  .masthead{padding-top:20px}
   article{grid-template-columns:48px 1fr;gap:10px}
   .daymark{padding-left:58px}
   article h2{font-size:22px}
   /* >=16px stops iOS Safari's auto-zoom-on-focus, which otherwise
      visually breaks the fixed chat panel when the keyboard opens */
-  .toolbar input,.toolbar select,.chat-form input{font-size:16px}
-  .ghost{padding:8px 10px}
+  .search-row input,.popover select,.chat-form input{font-size:16px}
+  .ghost{padding:10px}
+  .status-pill span:last-child{display:none} /* keep just the dot; "2m ago" doesn't fit */
+  /* popovers become bottom sheets on mobile instead of tiny anchored dropdowns */
+  .popover{
+    position:fixed;left:0;right:0;top:auto;bottom:0;width:100%;
+    max-height:70vh;overflow-y:auto;border-radius:14px 14px 0 0;border:0;
+    border-top:1px solid var(--rule);
+    padding:16px 16px calc(16px + env(safe-area-inset-bottom));
+  }
+  .popover-backdrop.show{
+    display:block;position:fixed;inset:0;background:rgba(17,22,33,.4);z-index:29;
+  }
 }
 
 /* ---------- gazette skin: typography, layout, ornament ---------- */
@@ -270,10 +311,11 @@ kbd{border:1px solid var(--rule);border-radius:2px;padding:1px 5px;font-family:i
 }
 [data-skin="gazette"] .masthead{display:block;text-align:center;padding:30px 0 14px}
 [data-skin="gazette"] .masthead h1{font-family:"IM Fell DW Pica",Georgia,serif;font-size:46px}
-[data-skin="gazette"] .masthead .sub{margin-left:0;justify-content:center;margin-top:16px}
+[data-skin="gazette"] .bar-actions{margin-left:0;justify-content:center;margin-top:16px;width:100%}
 [data-skin="gazette"] .head-fixed{border-bottom:6px double var(--ink)}
 [data-skin="gazette"] .ghost,
-[data-skin="gazette"] .toolbar label,
+[data-skin="gazette"] .popover label,
+[data-skin="gazette"] .status-pill,
 [data-skin="gazette"] article .meta,
 [data-skin="gazette"] .tagbar button,
 [data-skin="gazette"] footer{font-family:"IM Fell English SC",serif}
@@ -282,8 +324,8 @@ kbd{border:1px solid var(--rule);border-radius:2px;padding:1px 5px;font-family:i
 [data-skin="gazette"] nav.primary button{font-family:"IM Fell DW Pica",serif;font-size:17px}
 [data-skin="gazette"] nav.secondary{justify-content:center}
 [data-skin="gazette"] nav.secondary button{font-family:"IM Fell English",serif}
-[data-skin="gazette"] .toolbar input,
-[data-skin="gazette"] .toolbar select{font-family:"IM Fell English",serif;border-radius:1px}
+[data-skin="gazette"] .search-row input,
+[data-skin="gazette"] .popover select{font-family:"IM Fell English",serif;border-radius:1px}
 
 [data-skin="gazette"] .daymark{text-align:center;padding:26px 0 14px}
 [data-skin="gazette"] .daymark .flourish{
@@ -334,29 +376,57 @@ kbd{border:1px solid var(--rule);border-radius:2px;padding:1px 5px;font-family:i
   <div class="head-fixed">
     <header class="masthead">
       <span class="mark modern-only">Charcha</span>
+      <h1 class="sr-only modern-only">Current affairs &amp; markets</h1>
       <span class="eyebrow gazette-only">Established, After a Fashion, MMXXVI</span>
-      <h1><span class="modern-only">Current affairs &amp; markets</span><span class="gazette-only">The Hindoostan Gazette</span></h1>
+      <h1 class="gazette-only">The Hindoostan Gazette</h1>
       <div class="strap gazette-only">Domestic &amp; Foreign Intelligence, Commerce &amp; the Public Prints</div>
-      <div class="sub">
-        <span><span class="dot" id="statusDot"></span> <span id="statusText">connecting</span></span>
-        <button class="ghost" id="refreshBtn">Refresh</button>
-        <button class="ghost" id="autoScrollBtn">Auto-scroll: on</button>
-        <button class="ghost" id="themeBtn">Theme</button>
-        <button class="ghost" id="gazetteBtn">1800s Mode: Off</button>
-        <button class="ghost" id="chatBtn"><span class="modern-only">Chat</span><span class="gazette-only">Correspondence</span></button>
+
+      <nav class="primary" id="primaryNav" role="tablist"></nav>
+
+      <div class="bar-actions">
+        <button class="status-pill" id="statusBtn" title="Tap to refresh">
+          <span class="dot" id="statusDot"></span><span id="statusText">connecting</span>
+        </button>
+        <button class="icon-btn" id="searchToggleBtn" aria-label="Search headlines" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="action-wrap">
+          <button class="icon-btn" id="filtersBtn" aria-label="Filters" aria-haspopup="true" aria-expanded="false" aria-controls="filtersPopover">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="12" x2="20" y2="12" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="18" x2="20" y2="18" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="6" r="2" fill="var(--panel)" stroke-width="2"/><circle cx="16" cy="12" r="2" fill="var(--panel)" stroke-width="2"/><circle cx="10" cy="18" r="2" fill="var(--panel)" stroke-width="2"/></svg>
+            <span class="badge" id="filtersBadge" hidden>0</span>
+          </button>
+          <div class="popover" id="filtersPopover" hidden role="dialog" aria-label="Filters">
+            <label>Source
+              <select id="sourceFilter"><option value="">All sources</option></select>
+            </label>
+            <label id="strictWrap" class="checkbox-row"><input type="checkbox" id="strict"> Syllabus filter</label>
+            <div class="tagbar" id="tagbar"></div>
+          </div>
+        </div>
+        <div class="action-wrap">
+          <button class="icon-btn" id="settingsBtn" aria-label="Settings" aria-haspopup="true" aria-expanded="false" aria-controls="settingsPopover">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" stroke-width="2"/><circle cx="12" cy="12" r="8" stroke-width="2" stroke-dasharray="2 3.14"/></svg>
+          </button>
+          <div class="popover" id="settingsPopover" hidden role="dialog" aria-label="Settings">
+            <button class="ghost" id="refreshBtn">Refresh now</button>
+            <button class="ghost" id="autoScrollBtn">Auto-scroll: on</button>
+            <button class="ghost" id="themeBtn">Theme</button>
+            <button class="ghost" id="gazetteBtn">1800s Mode: Off</button>
+          </div>
+        </div>
       </div>
     </header>
 
-    <nav class="primary" id="primaryNav" role="tablist"></nav>
     <nav class="secondary" id="secondaryNav" role="tablist"></nav>
 
-    <div class="toolbar">
+    <div class="search-row" id="searchRow" hidden>
       <input id="search" type="search" placeholder="Filter headlines…" autocomplete="off">
-      <select id="sourceFilter"><option value="">All sources</option></select>
-      <label id="strictWrap"><input type="checkbox" id="strict"> Syllabus filter</label>
+      <button class="icon-btn" id="searchCloseBtn" aria-label="Close search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19" stroke-width="2" stroke-linecap="round"/><line x1="19" y1="5" x2="5" y2="19" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
     </div>
-    <div class="tagbar" id="tagbar"></div>
   </div>
+  <div class="popover-backdrop" id="popoverBackdrop"></div>
 
   <main class="wire" id="wire" aria-live="polite"></main>
 
@@ -596,6 +666,7 @@ $("sourceFilter").onchange = e => {
 function render(){
   renderTags();
   renderSources();
+  updateFiltersBadge();
   const rows = visible();
   const wire = $("wire");
 
@@ -649,11 +720,63 @@ $("wire").addEventListener("click", e => {
 /* ---------------- controls ---------------- */
 $("search").oninput = e => { state.query = e.target.value; state.cursor = -1; render(); };
 $("strict").onchange = e => { state.strict = e.target.checked; load(); };
-$("refreshBtn").onclick = async () => {
+async function doRefresh(){
   $("statusText").textContent = "fetching…";
   await fetch("/api/refresh", { method: "POST" });
   load();
+}
+$("statusBtn").onclick = doRefresh;
+$("refreshBtn").onclick = doRefresh;
+
+/* ---------------- search row (toggled by the search icon) ---------------- */
+function openSearch(){
+  $("searchRow").hidden = false;
+  $("searchToggleBtn").setAttribute("aria-expanded", "true");
+  $("search").focus();
+}
+function closeSearch(){
+  $("searchRow").hidden = true;
+  $("searchToggleBtn").setAttribute("aria-expanded", "false");
+}
+$("searchToggleBtn").onclick = () => {
+  $("searchRow").hidden ? openSearch() : closeSearch();
 };
+$("searchCloseBtn").onclick = () => {
+  $("search").value = "";
+  state.query = ""; state.cursor = -1; render();
+  closeSearch();
+};
+
+/* ---------------- filters / settings popovers ---------------- */
+function closeAllPopovers(){
+  document.querySelectorAll(".popover").forEach(p => { p.hidden = true; });
+  document.querySelectorAll(".icon-btn[aria-haspopup]").forEach(b => b.setAttribute("aria-expanded", "false"));
+  $("popoverBackdrop").classList.remove("show");
+}
+function togglePopover(btn, popover){
+  const opening = popover.hidden;
+  closeAllPopovers();
+  if (opening){
+    popover.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+    $("popoverBackdrop").classList.add("show");
+  }
+}
+$("filtersBtn").onclick = e => { e.stopPropagation(); togglePopover($("filtersBtn"), $("filtersPopover")); };
+$("settingsBtn").onclick = e => { e.stopPropagation(); togglePopover($("settingsBtn"), $("settingsPopover")); };
+document.addEventListener("click", e => {
+  if (e.target.closest(".action-wrap")) return;
+  closeAllPopovers();
+});
+$("popoverBackdrop").onclick = closeAllPopovers;
+
+function updateFiltersBadge(){
+  const count = (state.source ? 1 : 0) + (state.strict ? 1 : 0) + (state.tag ? 1 : 0);
+  const badge = $("filtersBadge");
+  badge.hidden = count === 0;
+  badge.textContent = count;
+}
+
 $("themeBtn").onclick = () => {
   const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
   document.documentElement.dataset.theme = next;
@@ -682,9 +805,6 @@ function closeChat(){
   $("chatFab").classList.remove("hidden");
   document.body.style.overflow = "";
 }
-$("chatBtn").onclick = () => {
-  $("chatPanel").classList.contains("open") ? closeChat() : openChat();
-};
 $("chatFab").onclick = () => {
   $("chatPanel").classList.contains("open") ? closeChat() : openChat();
 };
@@ -772,9 +892,10 @@ setInterval(() => {
 
 document.addEventListener("keydown", e => {
   if (e.target.tagName === "INPUT") { if (e.key === "Escape") e.target.blur(); return; }
+  if (e.key === "Escape"){ closeAllPopovers(); closeSearch(); return; }
   const arts = [...document.querySelectorAll("article")];
-  if (e.key === "/"){ e.preventDefault(); $("search").focus(); return; }
-  if (e.key === "r"){ $("refreshBtn").click(); return; }
+  if (e.key === "/"){ e.preventDefault(); openSearch(); return; }
+  if (e.key === "r"){ doRefresh(); return; }
   if (e.key === "j" || e.key === "k"){
     e.preventDefault();
     state.cursor = Math.max(0, Math.min(arts.length - 1, state.cursor + (e.key === "j" ? 1 : -1)));
