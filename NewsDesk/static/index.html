@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wire — current affairs &amp; markets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600;6..72,700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=IM+Fell+DW+Pica:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBFAF6; --panel:#FFFFFF; --ink:#111621; --mute:#6B7080;
+  --rule:#E0DCCF; --indigo:#1E2A78; --marigold:#C87F17;
+  --shadow:0 1px 0 rgba(17,22,33,.04);
+}
+:root[data-theme="dark"]{
+  --paper:#0D1015; --panel:#141923; --ink:#E7E5DF; --mute:#868C9B;
+  --rule:#222836; --indigo:#93A4FF; --marigold:#E0A845;
+  --shadow:none;
+}
+/* ---------- 1800s gazette skin (toggled via [data-skin="gazette"]) ---------- */
+:root[data-skin="gazette"]{
+  --paper:#EFE3C4; --panel:#F6EDD6; --ink:#2B1D10; --mute:#6B5C42;
+  --rule:#B8A374; --indigo:#6E2A1D; --marigold:#8B6B2E;
+  --shadow:0 1px 0 rgba(43,29,16,.08);
+}
+:root[data-skin="gazette"][data-theme="dark"]{
+  --paper:#181009; --panel:#20160D; --ink:#E8D9B5; --mute:#9C8B69;
+  --rule:#4A3A24; --indigo:#C05B44; --marigold:#D3AE5C;
+  --shadow:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font:400 15px/1.55 "Public Sans",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 96px}
+
+/* ---------- frozen header ---------- */
+.head-fixed{
+  position:sticky;top:0;z-index:20;
+  background:var(--paper);
+  border-bottom:1px solid var(--rule);
+}
+
+/* ---------- masthead ---------- */
+.masthead{display:flex;align-items:baseline;gap:14px;padding:34px 0 16px}
+.mark{
+  font:700 13px/1 "IBM Plex Mono",monospace;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--paper);background:var(--indigo);
+  padding:8px 10px;border-radius:2px;
+}
+.masthead h1{
+  font:600 30px/1 "Newsreader",Georgia,serif;margin:0;letter-spacing:-.01em;
+}
+.masthead .sub{
+  margin-left:auto;font:400 11px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
+  display:flex;align-items:center;gap:12px;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:#2E9E6B;display:inline-block}
+.dot.stale{background:var(--marigold)}
+.dot.bad{background:#C0392B}
+.ghost{
+  background:none;border:1px solid var(--rule);color:var(--mute);
+  font:400 10px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;
+  text-transform:uppercase;padding:6px 9px;border-radius:2px;cursor:pointer;
+}
+.ghost:hover{border-color:var(--indigo);color:var(--indigo)}
+
+/* ---------- tabs ---------- */
+nav.primary{display:flex;gap:0;border-bottom:1px solid var(--rule)}
+nav.primary button{
+  background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;
+  padding:12px 2px;margin-right:28px;cursor:pointer;color:var(--mute);
+  font:600 15px/1 "Public Sans",sans-serif;letter-spacing:.01em;
+}
+nav.primary button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--indigo)}
+
+nav.secondary{display:flex;flex-wrap:wrap;gap:8px;padding:14px 0 0}
+nav.secondary button{
+  background:none;border:1px solid var(--rule);border-radius:999px;
+  padding:6px 13px;cursor:pointer;color:var(--mute);
+  font:500 12.5px/1 "Public Sans",sans-serif;
+}
+nav.secondary button[aria-selected="true"]{
+  border-color:var(--indigo);color:var(--indigo);
+  box-shadow:inset 0 0 0 1px var(--indigo);
+}
+
+/* ---------- toolbar ---------- */
+.toolbar{display:flex;align-items:center;gap:10px;padding:16px 0 6px;flex-wrap:wrap}
+.toolbar input{
+  flex:1;min-width:180px;background:var(--panel);color:var(--ink);
+  border:1px solid var(--rule);border-radius:2px;padding:9px 11px;
+  font:400 14px/1 "Public Sans",sans-serif;
+}
+.toolbar input:focus{outline:2px solid var(--indigo);outline-offset:-1px}
+.toolbar select{
+  background:var(--panel);color:var(--ink);
+  border:1px solid var(--rule);border-radius:2px;padding:9px 11px;
+  font:400 13px/1 "Public Sans",sans-serif;max-width:220px;
+}
+.toolbar select:focus{outline:2px solid var(--indigo);outline-offset:-1px}
+.toolbar label{
+  display:flex;align-items:center;gap:7px;color:var(--mute);
+  font:400 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;
+  cursor:pointer;user-select:none;
+}
+.tagbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 4px}
+.tagbar button{
+  background:none;border:1px solid var(--rule);border-radius:2px;cursor:pointer;
+  padding:4px 8px;color:var(--mute);
+  font:500 10px/1.4 "IBM Plex Mono",monospace;letter-spacing:.1em;
+}
+.tagbar button[aria-pressed="true"]{background:var(--indigo);border-color:var(--indigo);color:var(--paper)}
+
+/* ---------- the wire ---------- */
+.wire{padding-top:10px}
+.daymark{
+  font:500 10px/1 "IBM Plex Mono",monospace;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--mute);padding:22px 0 10px 78px;
+}
+.daymark .flourish{display:none}
+article{
+  display:grid;grid-template-columns:64px 1fr;gap:14px;position:relative;
+}
+article .stamp{
+  text-align:right;padding-top:15px;
+  font:400 11px/1 "IBM Plex Mono",monospace;color:var(--mute);letter-spacing:.02em;
+}
+article .body{
+  border-left:1px solid var(--rule);padding:14px 0 16px 20px;position:relative;
+}
+article .body::before{
+  content:"";position:absolute;left:-3.5px;top:20px;width:6px;height:6px;
+  background:var(--rule);border-radius:50%;
+}
+article.fresh .body::before{background:var(--marigold);box-shadow:0 0 0 3px color-mix(in srgb,var(--marigold) 22%,transparent)}
+article:last-child .body{border-left-color:transparent}
+article h2{margin:0 0 7px;font:600 25px/1.32 "Newsreader",Georgia,serif;letter-spacing:-.005em}
+article h2 a{color:inherit;text-decoration:none}
+article h2 a:hover{color:var(--indigo);text-decoration:underline;text-underline-offset:3px}
+article.read h2 a{color:var(--mute)}
+article p{margin:0 0 9px;color:var(--mute);font-size:17px;line-height:1.55}
+article .meta{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  font:400 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--mute);
+}
+article .meta .src{color:var(--ink);font-weight:500}
+article .tag{color:var(--marigold);letter-spacing:.14em}
+article:focus-visible{outline:2px solid var(--indigo);outline-offset:4px;border-radius:2px}
+
+@keyframes stamp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+article{animation:stamp .32s ease both}
+@media (prefers-reduced-motion:reduce){article{animation:none}}
+
+.empty{padding:64px 0;text-align:center;color:var(--mute)}
+.empty strong{display:block;color:var(--ink);font:600 19px/1.3 "Newsreader",serif;margin-bottom:6px}
+footer{
+  padding:34px 0 0;border-top:1px solid var(--rule);margin-top:44px;
+  font:400 10.5px/1.8 "IBM Plex Mono",monospace;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--mute);
+}
+kbd{border:1px solid var(--rule);border-radius:2px;padding:1px 5px;font-family:inherit}
+
+/* ---------- chat mascot (floating avatar) ---------- */
+.chat-fab{
+  position:fixed;right:24px;bottom:24px;z-index:41;
+  width:56px;height:56px;border-radius:50%;padding:0;
+  background:var(--panel);border:1px solid var(--rule);box-shadow:0 4px 16px rgba(17,22,33,.16);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:opacity .2s ease,transform .2s ease;
+  animation:chat-fab-bob 3.6s ease-in-out infinite;
+}
+.chat-fab:hover{transform:scale(1.06)}
+.chat-fab.hidden{opacity:0;transform:scale(.8);pointer-events:none}
+.chat-fab svg{width:38px;height:38px;display:block}
+@keyframes chat-fab-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.chat-fab:hover{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.chat-fab{animation:none}}
+@media(max-width:560px){.chat-fab{right:16px;bottom:16px;width:48px;height:48px}.chat-fab svg{width:32px;height:32px}}
+
+/* ---------- chat panel ---------- */
+.chat-panel{
+  position:fixed;top:0;right:-380px;width:360px;height:100vh;z-index:40;
+  background:var(--panel);border-left:1px solid var(--rule);
+  display:flex;flex-direction:column;transition:right .22s ease;
+}
+.chat-panel.open{right:0}
+.chat-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 16px;border-bottom:1px solid var(--rule);
+}
+.chat-head h2{margin:0;font:600 16px/1 "Newsreader",Georgia,serif}
+.chat-close{background:none;border:0;color:var(--mute);font-size:18px;cursor:pointer;line-height:1}
+.chat-close:hover{color:var(--ink)}
+.chat-log{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.chat-msg{font:400 14px/1.5 "Public Sans",sans-serif;max-width:100%}
+.chat-msg.user{align-self:flex-end;background:var(--indigo);color:var(--paper);padding:8px 12px;border-radius:10px 10px 2px 10px;max-width:85%}
+.chat-msg.assistant{padding:0 2px}
+.chat-msg.error{color:#C0392B}
+.chat-sources-label{
+  display:block;margin:10px 0 6px;color:var(--mute);
+  font:500 10px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;
+}
+.chat-sources{display:flex;flex-wrap:wrap;gap:6px}
+.chat-sources a{
+  font:400 10.5px/1 "IBM Plex Mono",monospace;text-decoration:none;
+  border:1px solid var(--rule);border-radius:999px;padding:4px 9px;color:var(--mute);
+}
+.chat-sources a:hover{border-color:var(--indigo);color:var(--indigo)}
+.chat-empty{color:var(--mute);font-size:13px;padding:8px 2px}
+.chat-typing{display:inline-flex;gap:4px;padding:4px 0}
+.chat-typing span{
+  width:6px;height:6px;border-radius:50%;background:var(--mute);
+  animation:chat-pulse 1.1s ease-in-out infinite;
+}
+.chat-typing span:nth-child(2){animation-delay:.15s}
+.chat-typing span:nth-child(3){animation-delay:.3s}
+@keyframes chat-pulse{0%,60%,100%{opacity:.25;transform:scale(.85)}30%{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){
+  .chat-typing span{animation:none;opacity:.6}
+}
+.chat-form{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--rule)}
+.chat-form input{
+  flex:1;background:var(--paper);color:var(--ink);border:1px solid var(--rule);
+  border-radius:2px;padding:9px 11px;font:400 14px/1 "Public Sans",sans-serif;
+}
+.chat-form input:focus{outline:2px solid var(--indigo);outline-offset:-1px}
+.chat-form button{
+  background:var(--indigo);color:var(--paper);border:0;border-radius:2px;
+  padding:0 16px;cursor:pointer;font:500 13px/1 "Public Sans",sans-serif;
+}
+.chat-form button:disabled{opacity:.5;cursor:default}
+@media(max-width:560px){.chat-panel{width:100vw;right:-100vw}}
+
+@media(max-width:560px){
+  .masthead{flex-wrap:wrap;padding-top:24px}
+  .masthead .sub{margin-left:0;width:100%}
+  article{grid-template-columns:48px 1fr;gap:10px}
+  .daymark{padding-left:58px}
+  article h2{font-size:22px}
+}
+
+/* ---------- gazette skin: typography, layout, ornament ---------- */
+.gazette-only{display:none}
+[data-skin="gazette"] .modern-only{display:none}
+[data-skin="gazette"] .gazette-only{display:revert}
+
+[data-skin="gazette"] body{font-family:"IM Fell English",Georgia,serif;font-variant-numeric:oldstyle-nums}
+[data-skin="gazette"] .eyebrow{
+  font:400 12px/1 "IM Fell English SC",serif;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--marigold);margin-bottom:10px;
+}
+[data-skin="gazette"] .strap{
+  margin-top:10px;font:italic 400 14px/1.4 "IM Fell English",Georgia,serif;color:var(--mute);
+}
+[data-skin="gazette"] .masthead{display:block;text-align:center;padding:30px 0 14px}
+[data-skin="gazette"] .masthead h1{font-family:"IM Fell DW Pica",Georgia,serif;font-size:46px}
+[data-skin="gazette"] .masthead .sub{margin-left:0;justify-content:center;margin-top:16px}
+[data-skin="gazette"] .head-fixed{border-bottom:6px double var(--ink)}
+[data-skin="gazette"] .ghost,
+[data-skin="gazette"] .toolbar label,
+[data-skin="gazette"] article .meta,
+[data-skin="gazette"] .tagbar button,
+[data-skin="gazette"] footer{font-family:"IM Fell English SC",serif}
+
+[data-skin="gazette"] nav.primary{justify-content:center}
+[data-skin="gazette"] nav.primary button{font-family:"IM Fell DW Pica",serif;font-size:17px}
+[data-skin="gazette"] nav.secondary{justify-content:center}
+[data-skin="gazette"] nav.secondary button{font-family:"IM Fell English",serif}
+[data-skin="gazette"] .toolbar input,
+[data-skin="gazette"] .toolbar select{font-family:"IM Fell English",serif;border-radius:1px}
+
+[data-skin="gazette"] .daymark{text-align:center;padding:26px 0 14px}
+[data-skin="gazette"] .daymark .flourish{
+  display:block;font:400 13px/1 serif;letter-spacing:.5em;margin-bottom:4px;color:var(--marigold);
+}
+[data-skin="gazette"] article .body::before{border-radius:0;transform:rotate(45deg);width:8px;height:8px;left:-4.5px;top:23px}
+[data-skin="gazette"] article h2{font-family:"IM Fell DW Pica",Georgia,serif;font-weight:400}
+[data-skin="gazette"] article .stamp{font:italic 400 13px/1 "IM Fell English",serif}
+[data-skin="gazette"] article.lead p:first-of-type::first-letter{
+  float:left;font:400 50px/.78 "IM Fell DW Pica",Georgia,serif;color:var(--indigo);
+  padding:4px 6px 0 0;
+}
+[data-skin="gazette"] .empty strong{font-family:"IM Fell DW Pica",serif;font-weight:400}
+
+/* ---------- gazette skin: the Enquiry Desk ---------- */
+[data-skin="gazette"] .chat-head{border-bottom:6px double var(--ink);padding-bottom:14px}
+[data-skin="gazette"] .chat-head h2{font-family:"IM Fell DW Pica",Georgia,serif;font-weight:400;font-size:20px}
+[data-skin="gazette"] .chat-log,
+[data-skin="gazette"] .chat-empty{font-family:"IM Fell English",Georgia,serif;font-variant-numeric:oldstyle-nums}
+[data-skin="gazette"] .chat-msg{font-family:"IM Fell English",Georgia,serif;font-size:16px;line-height:1.5}
+[data-skin="gazette"] .chat-msg.user{
+  align-self:stretch;max-width:100%;background:var(--panel);color:var(--ink);
+  border:1px solid var(--rule);border-radius:0;padding:8px 12px;font-style:italic;
+}
+[data-skin="gazette"] .chat-msg.user::before{content:"To the Editor — ";color:var(--marigold);font-style:normal}
+[data-skin="gazette"] .chat-msg.assistant::before{
+  content:"✧";display:block;text-align:center;color:var(--marigold);
+  font-size:13px;letter-spacing:.5em;margin:2px 0 10px;
+}
+[data-skin="gazette"] .chat-msg.assistant p:first-of-type::first-letter{
+  float:left;font:400 42px/.75 "IM Fell DW Pica",Georgia,serif;color:var(--indigo);
+  padding:4px 6px 0 0;
+}
+[data-skin="gazette"] .chat-sources-label,
+[data-skin="gazette"] .chat-sources a{font-family:"IM Fell English SC",serif}
+[data-skin="gazette"] .chat-sources a{border-radius:1px}
+[data-skin="gazette"] .chat-form input{font-family:"IM Fell English",serif;border-radius:1px}
+[data-skin="gazette"] .chat-form button{
+  background:var(--indigo);border-radius:1px;font-family:"IM Fell English SC",serif;
+  letter-spacing:.08em;text-transform:uppercase;font-size:12px;
+}
+[data-skin="gazette"] .chat-msg-pending{color:var(--mute);font-style:italic}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head-fixed">
+    <header class="masthead">
+      <span class="mark modern-only">Wire</span>
+      <span class="eyebrow gazette-only">Established, After a Fashion, MMXXVI</span>
+      <h1><span class="modern-only">Current affairs &amp; markets</span><span class="gazette-only">The Hindoostan Gazette</span></h1>
+      <div class="strap gazette-only">Domestic &amp; Foreign Intelligence, Commerce &amp; the Public Prints</div>
+      <div class="sub">
+        <span><span class="dot" id="statusDot"></span> <span id="statusText">connecting</span></span>
+        <button class="ghost" id="refreshBtn">Refresh</button>
+        <button class="ghost" id="autoScrollBtn">Auto-scroll: on</button>
+        <button class="ghost" id="themeBtn">Theme</button>
+        <button class="ghost" id="gazetteBtn">1800s Mode: Off</button>
+        <button class="ghost" id="chatBtn"><span class="modern-only">Chat</span><span class="gazette-only">Correspondence</span></button>
+      </div>
+    </header>
+
+    <nav class="primary" id="primaryNav" role="tablist"></nav>
+    <nav class="secondary" id="secondaryNav" role="tablist"></nav>
+
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="Filter headlines…" autocomplete="off">
+      <select id="sourceFilter"><option value="">All sources</option></select>
+      <label id="strictWrap"><input type="checkbox" id="strict"> Syllabus filter</label>
+    </div>
+    <div class="tagbar" id="tagbar"></div>
+  </div>
+
+  <main class="wire" id="wire" aria-live="polite"></main>
+
+  <button class="chat-fab" id="chatFab" aria-label="Open chat">
+    <span class="modern-only">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="4" cy="24" r="3" fill="var(--indigo)"/>
+        <circle cx="44" cy="24" r="3" fill="var(--indigo)"/>
+        <line x1="24" y1="4" x2="24" y2="10" stroke="var(--marigold)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="24" cy="4" r="3" fill="var(--marigold)"/>
+        <circle cx="24" cy="24" r="18" fill="var(--indigo)"/>
+        <circle cx="17" cy="22" r="3" fill="var(--paper)"/>
+        <circle cx="31" cy="22" r="3" fill="var(--paper)"/>
+        <path d="M16 30 Q24 36 32 30" stroke="var(--paper)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="gazette-only">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="24" cy="26" r="18" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="15" y="2" width="18" height="13" rx="1" fill="var(--ink)"/>
+        <ellipse cx="24" cy="15" rx="14" ry="3" fill="var(--ink)"/>
+        <circle cx="24" cy="28" r="13" fill="var(--paper)"/>
+        <circle cx="19" cy="26" r="1.8" fill="var(--ink)"/>
+        <circle cx="30" cy="26" r="1.8" fill="var(--ink)"/>
+        <circle cx="30" cy="26" r="5" fill="none" stroke="var(--marigold)" stroke-width="1.5"/>
+        <path d="M34 29 Q37 32 35 39" stroke="var(--marigold)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <path d="M14 33 Q19 30 24 33 Q29 30 34 33" stroke="var(--ink)" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </span>
+  </button>
+
+  <aside class="chat-panel" id="chatPanel" aria-hidden="true">
+    <div class="chat-head">
+      <h2><span class="modern-only">Ask the wire</span><span class="gazette-only">The Enquiry Desk</span></h2>
+      <button class="chat-close" id="chatCloseBtn" aria-label="Close chat">&times;</button>
+    </div>
+    <div class="chat-log" id="chatLog">
+      <div class="chat-empty">
+        <span class="modern-only">Ask a question about what's currently on the wire — answers are grounded in fetched headlines only.</span>
+        <span class="gazette-only">Pose a question to the Desk; answers are drawn strictly from intelligence already received upon the wire.</span>
+      </div>
+    </div>
+    <form class="chat-form" id="chatForm">
+      <input id="chatInput" type="text" autocomplete="off">
+      <button type="submit" id="chatSendBtn"><span class="modern-only">Ask</span><span class="gazette-only">Dispatch</span></button>
+    </form>
+  </aside>
+
+  <footer>
+    <kbd>j</kbd>/<kbd>k</kbd> move · <kbd>o</kbd> open · <kbd>/</kbd> search · <kbd>r</kbd> refresh ·
+    <span id="footCount"></span>
+  </footer>
+</div>
+
+<script>
+const state = {
+  nav: [], section: "upsc", tab: "upsc",
+  items: [], query: "", strict: false, tag: null, source: "",
+  cursor: -1, read: new Set(), seen: new Set(), firstLoad: true,
+  chatHistory: [], chatBusy: false,
+};
+
+/* read-state survives reloads; degrades quietly if storage is unavailable */
+try { state.read = new Set(JSON.parse(localStorage.getItem("wire.read") || "[]")); } catch {}
+const persistRead = () => {
+  try { localStorage.setItem("wire.read", JSON.stringify([...state.read].slice(-1200))); } catch {}
+};
+try {
+  const t = localStorage.getItem("wire.theme");
+  if (t) document.documentElement.dataset.theme = t;
+  else if (matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.dataset.theme = "dark";
+} catch {}
+try {
+  if (localStorage.getItem("wire.skin") === "gazette") {
+    document.documentElement.dataset.skin = "gazette";
+    document.getElementById("gazetteBtn").textContent = "1800s Mode: On";
+  }
+} catch {}
+
+/* ---------------- chat copy (skin-dependent, can't be done with CSS spans) ---------------- */
+function chatCopy(){
+  const gazette = document.documentElement.dataset.skin === "gazette";
+  return gazette ? {
+    placeholder: "Pose your enquiry to the Desk…",
+    pending: '<span class="chat-msg-pending">Awaiting the Editor’s reply…</span>',
+    sourcesLabel: "References",
+    fabLabel: "Open correspondence with the Automaton Editor",
+  } : {
+    placeholder: "Ask about current headlines…",
+    pending: '<span class="chat-typing"><span></span><span></span><span></span></span>',
+    sourcesLabel: "Sources",
+    fabLabel: "Open chat with the wire assistant",
+  };
+}
+function applyChatCopy(){
+  const c = chatCopy();
+  document.getElementById("chatInput").placeholder = c.placeholder;
+  document.getElementById("chatFab").setAttribute("aria-label", c.fabLabel);
+}
+applyChatCopy();
+
+const PERIOD_LABEL = {
+  upsc: "Domestic Intelligence",
+  markets: "Commerce &amp; Exchange",
+  india: "The Presidencies",
+  world: "Foreign Intelligence",
+  alt: "Bullion, Produce &amp; Ventures",
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function ago(iso){
+  const mins = Math.round((Date.now() - new Date(iso)) / 60000);
+  if (mins < 1) return "now";
+  if (mins < 60) return mins + "m";
+  const h = Math.round(mins / 60);
+  if (h < 24) return h + "h";
+  return Math.round(h / 24) + "d";
+}
+function fullTime(iso){
+  return new Date(iso).toLocaleString(undefined, {
+    weekday: "short", day: "numeric", month: "short",
+    hour: "numeric", minute: "2-digit",
+  });
+}
+function dayLabel(iso){
+  const d = new Date(iso), today = new Date();
+  const same = a => a.toDateString() === d.toDateString();
+  if (same(today)) return "Today";
+  today.setDate(today.getDate() - 1);
+  if (same(today)) return "Yesterday";
+  return d.toLocaleDateString(undefined, { weekday:"long", day:"numeric", month:"short" });
+}
+
+/* ---------------- nav ---------------- */
+async function loadNav(){
+  const data = await (await fetch("/api/nav")).json();
+  state.nav = data.nav;
+  renderNav();
+  await load();
+  setInterval(load, Math.max(60, data.refresh_seconds / 2) * 1000);
+}
+
+function renderNav(){
+  const gazette = document.documentElement.dataset.skin === "gazette";
+  $("primaryNav").innerHTML = state.nav.map(s =>
+    `<button role="tab" data-section="${s.id}" aria-selected="${s.id===state.section}">${gazette && PERIOD_LABEL[s.id] || esc(s.label)}</button>`
+  ).join("");
+
+  const section = state.nav.find(s => s.id === state.section);
+  const kids = section?.children ?? [];
+  $("secondaryNav").innerHTML = kids.map(c =>
+    `<button role="tab" data-tab="${c.id}" aria-selected="${c.id===state.tab}">${gazette && PERIOD_LABEL[c.id] || esc(c.label)}</button>`
+  ).join("");
+  $("secondaryNav").style.display = kids.length ? "flex" : "none";
+  $("strictWrap").style.display = state.tab === "upsc" ? "flex" : "none";
+}
+
+$("primaryNav").onclick = e => {
+  const b = e.target.closest("[data-section]"); if (!b) return;
+  state.section = b.dataset.section;
+  const s = state.nav.find(x => x.id === state.section);
+  state.tab = s.children.length ? s.children[0].id : s.id;
+  state.tag = null; state.source = ""; state.cursor = -1;
+  renderNav(); load();
+};
+$("secondaryNav").onclick = e => {
+  const b = e.target.closest("[data-tab]"); if (!b) return;
+  state.tab = b.dataset.tab; state.tag = null; state.source = ""; state.cursor = -1;
+  renderNav(); load();
+};
+
+/* ---------------- data ---------------- */
+async function load(){
+  const min = (state.tab === "upsc" && state.strict) ? 1.5 : -99;
+  try {
+    const r = await fetch(`/api/items?tab=${state.tab}&min_score=${min}&limit=150`);
+    const data = await r.json();
+    state.items = data.items || [];
+    setStatus(data.last_refresh, true);
+    render();
+  } catch {
+    setStatus(null, false);
+  }
+}
+
+function setStatus(lastRefresh, ok){
+  const dot = $("statusDot"), text = $("statusText");
+  if (!ok){ dot.className = "dot bad"; text.textContent = "server unreachable"; return; }
+  if (!lastRefresh){ dot.className = "dot stale"; text.textContent = "first fetch running"; return; }
+  const mins = Math.round((Date.now() - new Date(lastRefresh)) / 60000);
+  dot.className = "dot" + (mins > 20 ? " stale" : "");
+  text.textContent = mins < 1 ? "updated just now" : `updated ${mins}m ago`;
+}
+
+/* ---------------- render ---------------- */
+function visible(){
+  const q = state.query.trim().toLowerCase();
+  return state.items.filter(i => {
+    if (state.tag && !i.tags.includes(state.tag)) return false;
+    if (state.source && i.source !== state.source) return false;
+    if (!q) return true;
+    return (i.title + " " + i.source + " " + i.summary).toLowerCase().includes(q);
+  });
+}
+
+function renderTags(){
+  const counts = {};
+  state.items.forEach(i => i.tags.forEach(t => counts[t] = (counts[t] || 0) + 1));
+  const tags = Object.keys(counts).sort((a,b) => counts[b] - counts[a]).slice(0, 9);
+  $("tagbar").innerHTML = tags.map(t =>
+    `<button data-tag="${t}" aria-pressed="${state.tag===t}">${t} ${counts[t]}</button>`
+  ).join("");
+}
+$("tagbar").onclick = e => {
+  const b = e.target.closest("[data-tag]"); if (!b) return;
+  state.tag = state.tag === b.dataset.tag ? null : b.dataset.tag;
+  state.cursor = -1; render();
+};
+
+function renderSources(){
+  const counts = {};
+  state.items.forEach(i => counts[i.source] = (counts[i.source] || 0) + 1);
+  const sources = Object.keys(counts).sort((a,b) => counts[b] - counts[a]);
+  const sel = $("sourceFilter");
+  const current = state.source;
+  sel.innerHTML = `<option value="">All sources</option>` +
+    sources.map(s => `<option value="${esc(s)}">${esc(s)} (${counts[s]})</option>`).join("");
+  sel.value = sources.includes(current) ? current : "";
+  if (!sources.includes(current)) state.source = "";
+}
+$("sourceFilter").onchange = e => {
+  state.source = e.target.value; state.cursor = -1; render();
+};
+
+function render(){
+  renderTags();
+  renderSources();
+  const rows = visible();
+  const wire = $("wire");
+
+  if (!rows.length){
+    wire.innerHTML = `<div class="empty"><strong>Nothing here yet</strong>
+      ${state.items.length ? "Clear the filter to see everything on this tab."
+        : "The first fetch takes a few seconds. Hit Refresh."}</div>`;
+    $("footCount").textContent = "";
+    return;
+  }
+
+  let day = "", out = "", leadPending = false;
+  rows.forEach((i, idx) => {
+    const d = dayLabel(i.published);
+    if (d !== day){
+      day = d;
+      out += `<div class="daymark"><span class="flourish">&#10087;</span><span class="label">${d}</span></div>`;
+      leadPending = true;
+    }
+    const fresh = !state.firstLoad && !state.seen.has(i.id);
+    const isLead = leadPending && !!i.summary;
+    if (isLead) leadPending = false;
+    const cls = ["", fresh ? "fresh" : "", state.read.has(i.id) ? "read" : "", isLead ? "lead" : ""]
+      .join(" ").trim();
+    out += `
+      <article class="${cls}" tabindex="-1" data-idx="${idx}" data-id="${i.id}">
+        <div class="stamp" title="${esc(fullTime(i.published))}">${ago(i.published)}</div>
+        <div class="body">
+          <h2><a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a></h2>
+          ${i.summary ? `<p>${esc(i.summary)}</p>` : ""}
+          <div class="meta">
+            <span class="src">${esc(i.source)}</span>
+            <time datetime="${esc(i.published)}" title="${esc(fullTime(i.published))}">${esc(fullTime(i.published))}</time>
+            ${i.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+          </div>
+        </div>
+      </article>`;
+  });
+
+  wire.innerHTML = out;
+  rows.forEach(i => state.seen.add(i.id));
+  state.firstLoad = false;
+  $("footCount").textContent = `${rows.length} stories`;
+}
+
+$("wire").addEventListener("click", e => {
+  const a = e.target.closest("a"); const art = e.target.closest("article");
+  if (a && art){ state.read.add(art.dataset.id); persistRead(); art.classList.add("read"); }
+});
+
+/* ---------------- controls ---------------- */
+$("search").oninput = e => { state.query = e.target.value; state.cursor = -1; render(); };
+$("strict").onchange = e => { state.strict = e.target.checked; load(); };
+$("refreshBtn").onclick = async () => {
+  $("statusText").textContent = "fetching…";
+  await fetch("/api/refresh", { method: "POST" });
+  load();
+};
+$("themeBtn").onclick = () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem("wire.theme", next); } catch {}
+};
+$("gazetteBtn").onclick = () => {
+  const on = document.documentElement.dataset.skin !== "gazette";
+  document.documentElement.dataset.skin = on ? "gazette" : "modern";
+  $("gazetteBtn").textContent = "1800s Mode: " + (on ? "On" : "Off");
+  try { localStorage.setItem("wire.skin", on ? "gazette" : "modern"); } catch {}
+  renderNav();
+  applyChatCopy();
+};
+
+/* ---------------- chat ---------------- */
+function openChat(){
+  $("chatPanel").classList.add("open");
+  $("chatPanel").setAttribute("aria-hidden", "false");
+  $("chatFab").classList.add("hidden");
+  $("chatInput").focus();
+}
+function closeChat(){
+  $("chatPanel").classList.remove("open");
+  $("chatPanel").setAttribute("aria-hidden", "true");
+  $("chatFab").classList.remove("hidden");
+}
+$("chatBtn").onclick = () => {
+  $("chatPanel").classList.contains("open") ? closeChat() : openChat();
+};
+$("chatFab").onclick = () => {
+  $("chatPanel").classList.contains("open") ? closeChat() : openChat();
+};
+$("chatCloseBtn").onclick = closeChat;
+
+function appendChatMsg(role, html){
+  const log = $("chatLog");
+  const empty = log.querySelector(".chat-empty");
+  if (empty) empty.remove();
+  const div = document.createElement("div");
+  div.className = `chat-msg ${role}`;
+  div.innerHTML = html;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+  return div;
+}
+
+$("chatForm").onsubmit = async e => {
+  e.preventDefault();
+  if (state.chatBusy) return;
+  const input = $("chatInput");
+  const question = input.value.trim();
+  if (!question) return;
+
+  input.value = "";
+  appendChatMsg("user", esc(question));
+  const pending = appendChatMsg("assistant", chatCopy().pending);
+  state.chatBusy = true;
+  $("chatSendBtn").disabled = true;
+
+  try {
+    const r = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, tab: state.tab, history: state.chatHistory }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || "chat request failed");
+
+    state.chatHistory.push({ role: "user", content: question });
+    state.chatHistory.push({ role: "assistant", content: data.answer });
+
+    const sources = (data.sources || []).map(s =>
+      `<a href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.source)}</a>`
+    ).join("");
+    pending.innerHTML = `<p>${esc(data.answer).replace(/\n/g, "<br>")}</p>` +
+      (sources ? `<span class="chat-sources-label">${chatCopy().sourcesLabel}</span><div class="chat-sources">${sources}</div>` : "");
+  } catch (err) {
+    pending.className = "chat-msg error";
+    pending.textContent = err.message || "Something went wrong.";
+  } finally {
+    state.chatBusy = false;
+    $("chatSendBtn").disabled = false;
+  }
+};
+
+/* ---------------- auto-scroll ticker ----------------
+   setInterval, not requestAnimationFrame: rAF callbacks are never invoked
+   while document.hidden is true, and a window opened programmatically
+   (not by a direct user click) can sit in that state indefinitely even
+   though it's genuinely on screen. setInterval keeps ticking regardless. */
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const scroll = { on: !reduceMotion, hover: false, typing: false };
+const TICK_MS = 40;
+const PIXELS_PER_TICK = 28 * TICK_MS / 1000;
+
+$("autoScrollBtn").onclick = () => {
+  scroll.on = !scroll.on;
+  $("autoScrollBtn").textContent = "Auto-scroll: " + (scroll.on ? "on" : "off");
+};
+$("wire").addEventListener("mouseenter", () => { scroll.hover = true; });
+$("wire").addEventListener("mouseleave", () => { scroll.hover = false; });
+document.addEventListener("focusin", e => { if (e.target.tagName === "INPUT") scroll.typing = true; });
+document.addEventListener("focusout", e => { if (e.target.tagName === "INPUT") scroll.typing = false; });
+
+setInterval(() => {
+  if (!scroll.on || scroll.hover || scroll.typing) return;
+  const maxY = document.documentElement.scrollHeight - window.innerHeight;
+  if (maxY <= 1) return;
+  const next = window.scrollY + PIXELS_PER_TICK;
+  window.scrollTo(0, next >= maxY ? 0 : next);
+}, TICK_MS);
+
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") { if (e.key === "Escape") e.target.blur(); return; }
+  const arts = [...document.querySelectorAll("article")];
+  if (e.key === "/"){ e.preventDefault(); $("search").focus(); return; }
+  if (e.key === "r"){ $("refreshBtn").click(); return; }
+  if (e.key === "j" || e.key === "k"){
+    e.preventDefault();
+    state.cursor = Math.max(0, Math.min(arts.length - 1, state.cursor + (e.key === "j" ? 1 : -1)));
+    const el = arts[state.cursor];
+    if (el){ el.focus(); el.scrollIntoView({ block:"center", behavior:"smooth" }); }
+  }
+  if (e.key === "o" && arts[state.cursor]) arts[state.cursor].querySelector("a").click();
+});
+
+loadNav();
+</script>
+</body>
+</html>

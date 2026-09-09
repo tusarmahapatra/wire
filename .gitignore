@@ -1,0 +1,18 @@
+# Environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+
+# Logs
+*.log
+
+# Backup/duplicate archive (not source)
+files (2).zip
+
+# OS
+.DS_Store
+Thumbs.db
