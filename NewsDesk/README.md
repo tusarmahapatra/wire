@@ -6,14 +6,30 @@ scores and tags each story, and serves a single-page reader.
 
 ## Run
 
+Two steps:
+
 ```bash
-pip install -r requirements.txt
-python check_feeds.py          # do this first — see "Feeds go stale" below
-uvicorn app:app --reload --port 8000
+./startup.sh   # 1. first run creates .env — add your GROQ_API_KEY, then...
+./startup.sh   # 2. ...run it again to install deps and start Wire
 ```
+
+Get a free Groq key at https://console.groq.com/keys. No key? Wire still
+runs — only the chat feature is disabled.
 
 Open http://localhost:8000. The first fetch takes ~10 seconds; the page shows
 "first fetch running" until it lands.
+
+<details>
+<summary>Manual setup (no script)</summary>
+
+```bash
+python -m venv .venv && source .venv/bin/activate  # .venv\Scripts\activate on Windows
+pip install -r requirements.txt
+python check_feeds.py          # optional — see "Feeds go stale" below
+uvicorn app:app --reload --port 8000
+```
+
+</details>
 
 ## How it fits together
 
