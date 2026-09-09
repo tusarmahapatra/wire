@@ -18,6 +18,8 @@ import numpy as np
 log = logging.getLogger("newsdesk.rag")
 
 EMBED_MODEL = os.getenv("EMBED_MODEL", "BAAI/bge-small-en-v1.5")
+EMBED_BATCH_SIZE = int(os.getenv("EMBED_BATCH_SIZE", "32"))
+RAG_MAX_ITEMS = int(os.getenv("RAG_MAX_ITEMS", "600"))
 
 _model = None
 _INDEX: dict[str, tuple[object, np.ndarray]] = {}  # id -> (Item, unit vector)
@@ -48,16 +50,25 @@ async def sync_index(store: dict[str, dict[str, object]]) -> None:
     for bucket in store.values():
         live.update(bucket)
 
+    # Cap the corpus so a big first refresh (or a large MAX_PER_TAB) can't
+    # force an unbounded embedding burst — keep only the most recent items.
+    if len(live) > RAG_MAX_ITEMS:
+        newest = sorted(live.values(), key=lambda i: i.published, reverse=True)[:RAG_MAX_ITEMS]
+        live = {item.id: item for item in newest}
+
     async with _index_lock:
         stale = [id_ for id_ in _INDEX if id_ not in live]
         for id_ in stale:
             del _INDEX[id_]
 
         new_items = [item for id_, item in live.items() if id_ not in _INDEX]
-        if new_items:
-            texts = [_text_of(item) for item in new_items]
+        # Embed in small batches rather than all at once — bounds peak memory
+        # regardless of how many new items showed up in this refresh.
+        for i in range(0, len(new_items), EMBED_BATCH_SIZE):
+            chunk = new_items[i : i + EMBED_BATCH_SIZE]
+            texts = [_text_of(item) for item in chunk]
             vecs = await asyncio.to_thread(_embed, texts)
-            for item, vec in zip(new_items, vecs):
+            for item, vec in zip(chunk, vecs):
                 _INDEX[item.id] = (item, vec)
 
     if stale or new_items:

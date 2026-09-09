@@ -214,7 +214,8 @@ async def refresh_all() -> int:
     LAST_REFRESH = datetime.now(timezone.utc)
     log.info("refresh complete: %s new items", added)
 
-    await rag.sync_index(STORE)
+    if chat.GROQ_API_KEY:
+        await rag.sync_index(STORE)
     return added
 
 
