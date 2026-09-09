@@ -1,4 +1,4 @@
-# Wire — a personal news desk
+# Charcha — a personal news desk
 
 Two tabs: **Current Affairs** (UPSC-shaped) and **Investing** → India / World /
 Crypto·Gold·Commodities. One Python process polls RSS in the background, dedupes,
@@ -10,10 +10,10 @@ Two steps:
 
 ```bash
 ./startup.sh   # 1. first run creates .env — add your GROQ_API_KEY, then...
-./startup.sh   # 2. ...run it again to install deps and start Wire
+./startup.sh   # 2. ...run it again to install deps and start Charcha
 ```
 
-Get a free Groq key at https://console.groq.com/keys. No key? Wire still
+Get a free Groq key at https://console.groq.com/keys. No key? Charcha still
 runs — only the chat feature is disabled.
 
 Open http://localhost:8000. The first fetch takes ~10 seconds; the page shows

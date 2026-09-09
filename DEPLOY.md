@@ -1,8 +1,8 @@
-# Deploying Wire for free
+# Deploying Charcha for free
 
 **Platform: [Render](https://render.com), Free web service tier.**
 
-Why Render and not GitHub Pages: Pages only serves static files, and Wire
+Why Render and not GitHub Pages: Pages only serves static files, and Charcha
 needs a persistent Python process (the background RSS-poll loop, the
 in-memory store, `/api/chat`). Render runs the actual `app.py` process with
 zero code changes. The free tier's real tradeoff is described below —
@@ -54,7 +54,7 @@ updates.
 ## The free-tier tradeoff — read this
 
 Render's free instances **spin down after 15 minutes with no HTTP traffic**
-and cold-start (~30–50s) on the next request. This directly hits Wire's
+and cold-start (~30–50s) on the next request. This directly hits Charcha's
 core design:
 
 - The background `refresh_loop` (`app.py:211`) only runs while the process

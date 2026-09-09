@@ -1,4 +1,4 @@
-# Wire
+# Charcha
 
 A personal news desk: two tabs, **Current Affairs** (UPSC-shaped) and
 **Investing** (India / World / Crypto·Gold·Commodities). One Python process
@@ -15,7 +15,7 @@ it.
 ```bash
 cd NewsDesk
 ./startup.sh   # first run creates .env — add your GROQ_API_KEY, then...
-./startup.sh   # ...run it again to install deps and start Wire
+./startup.sh   # ...run it again to install deps and start Charcha
 ```
 
 Open http://localhost:8000. No Groq key? It still runs — only chat is

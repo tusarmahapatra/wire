@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Wire — one-command setup and launch.
+# Charcha — one-command setup and launch.
 #
 # Step 1: run this once — it creates .env for you, then stops so you can add
 #         your Groq key.
@@ -14,12 +14,12 @@ if [ ! -f .env ]; then
     echo "Add your free Groq key (https://console.groq.com/keys) to .env:"
     echo "  GROQ_API_KEY=gsk_..."
     echo
-    echo "Then run ./startup.sh again to install and start Wire."
+    echo "Then run ./startup.sh again to install and start Charcha."
     exit 0
 fi
 
 if ! grep -q '^GROQ_API_KEY=.\+' .env; then
-    echo "Note: GROQ_API_KEY is empty in .env — Wire will still run, but the chat feature will be disabled."
+    echo "Note: GROQ_API_KEY is empty in .env — Charcha will still run, but the chat feature will be disabled."
     echo "Get a free key at https://console.groq.com/keys and add it to .env to enable chat."
     echo
 fi
@@ -42,5 +42,5 @@ echo "Installing dependencies..."
 pip install -q -r requirements.txt
 
 echo
-echo "Starting Wire at http://localhost:8000"
+echo "Starting Charcha at http://localhost:8000"
 exec uvicorn app:app --host 0.0.0.0 --port "${PORT:-8000}"
