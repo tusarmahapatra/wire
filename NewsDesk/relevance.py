@@ -60,6 +60,47 @@ UPSC_TOPICS: dict[str, list[str]] = {
     ],
 }
 
+AI_TOPICS: dict[str, list[str]] = {
+    "LLMS": [
+        "llm", "large language model", "language model", "foundation model",
+        "generative ai", "gen ai", "multimodal", "reasoning model", "frontier model",
+    ],
+    "OPENAI": [
+        "openai", "chatgpt", "gpt-4", "gpt-5", "gpt-6", "codex", "sora", "dall e",
+    ],
+    "GOOGLE": [
+        "google ai", "gemini", "deepmind", "gemma", "alphafold", "imagen", "veo",
+    ],
+    "ANTHROPIC": [
+        "anthropic", "claude", "constitutional ai", "claude code",
+    ],
+    "AGENTS": [
+        "ai agent", "ai agents", "agentic ai", "agentic", "autonomous agent",
+        "computer use", "tool use", "multi agent",
+    ],
+    "CODING": [
+        "ai coding", "coding agent", "code generation", "github copilot",
+        "cursor ai", "windsurf", "code assistant", "developer tools",
+    ],
+    "RESEARCH": [
+        "machine learning", "deep learning", "transformer", "neural network",
+        "reinforcement learning", "benchmark", "inference", "training",
+        "fine tuning", "synthetic data", "ai research",
+    ],
+    "INFRA": [
+        "nvidia", "amd", "gpu", "ai chip", "ai chips", "accelerator", "tpu",
+        "data center", "datacenter", "inference infrastructure", "compute",
+    ],
+    "ROBOTICS": [
+        "robotics", "humanoid", "autonomous vehicle", "self driving", "robot",
+        "physical ai",
+    ],
+    "POLICY": [
+        "ai regulation", "ai act", "ai policy", "ai safety", "ai governance",
+        "artificial intelligence act", "copyright", "model safety",
+    ],
+}
+
 MARKET_TOPICS: dict[str, list[str]] = {
     "EQUITY": ["stock", "shares", "nifty", "sensex", "s&p", "nasdaq", "dow", "index", "rally", "selloff"],
     "EARNINGS": ["earnings", "q1 result", "q2 result", "q3 result", "q4 result", "profit", "revenue", "guidance", "margin"],
@@ -100,7 +141,12 @@ def _tag(text: str, vocab: dict[str, list[str]]) -> tuple[list[str], int]:
 def score_item(title: str, summary: str, tab: str, source_weight: float = 0.0):
     """Return (score, tags). Higher score = more worth your morning."""
     text = _norm(f"{title} {summary}")
-    vocab = UPSC_TOPICS if tab == "upsc" else MARKET_TOPICS
+    if tab == "upsc":
+        vocab = UPSC_TOPICS
+    elif tab.startswith("ai"):
+        vocab = AI_TOPICS
+    else:
+        vocab = MARKET_TOPICS
 
     tags, hit_count = _tag(text, vocab)
     noise = sum(1 for phrase in NOISE if phrase in text)

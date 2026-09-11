@@ -77,6 +77,22 @@ MARKETS_WORLD = [
     gnews("Asia", "Nikkei OR Hang Seng OR China stimulus economy", region="US"),
 ]
 
+# --------------------------------------------------------------------------
+# Tab 3 — AI
+# --------------------------------------------------------------------------
+AI_NEWS = [
+    gnews("AI News", "artificial intelligence AI latest news"),
+    gnews("OpenAI", "OpenAI ChatGPT GPT-5 GPT-6 latest"),
+    gnews("Google · Gemini", "Google Gemini DeepMind AI latest"),
+    gnews("Anthropic · Claude", "Anthropic Claude AI latest"),
+    gnews("AI Coding", "AI coding GitHub Copilot Cursor Claude Code coding agents"),
+    gnews("AI Agents", "AI agents agentic AI autonomous agents latest"),
+    gnews("AI Research", "AI research machine learning LLM reasoning multimodal"),
+    gnews("AI Infrastructure", "AI chips NVIDIA AMD data center GPU inference"),
+    gnews("AI Regulation", "AI regulation policy law governance India US EU"),
+    gnews("Robotics", "AI robotics humanoid robots autonomous systems"),
+]
+
 MARKETS_ALT = [
     Feed("CoinDesk", "https://www.coindesk.com/arc/outboundfeeds/rss/", weight=1.5),
     Feed("Cointelegraph", "https://cointelegraph.com/rss", weight=1.0),
@@ -94,6 +110,7 @@ TAB_FEEDS: dict[str, list[Feed]] = {
     "india": MARKETS_INDIA,
     "world": MARKETS_WORLD,
     "alt": MARKETS_ALT,
+    "ai-news": AI_NEWS,
 }
 
 # Shape of the tab bar in the UI.
@@ -106,6 +123,13 @@ NAV = [
             {"id": "india", "label": "India"},
             {"id": "world", "label": "World"},
             {"id": "alt", "label": "Crypto · Gold · Commodities"},
+        ],
+    },
+    {
+        "id": "ai",
+        "label": "AI",
+        "children": [
+            {"id": "ai-news", "label": "AI News"},
         ],
     },
 ]
