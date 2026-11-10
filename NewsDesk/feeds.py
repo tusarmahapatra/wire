@@ -105,7 +105,33 @@ MARKETS_ALT = [
     gnews("Mining", "mining industry metals production output", region="US"),
 ]
 
+# --------------------------------------------------------------------------
+# Tab 3 — Regional language news (Google News per-language editions)
+# --------------------------------------------------------------------------
+BENGALI = [
+    gnews("Top stories", "বাংলা সংবাদ", lang="bn"),
+    gnews("West Bengal", "পশ্চিমবঙ্গ", lang="bn"),
+    gnews("Kolkata", "কলকাতা", lang="bn"),
+    gnews("Politics", "রাজনীতি", lang="bn"),
+    gnews("Economy", "অর্থনীতি বাজার", lang="bn"),
+    gnews("India", "ভারত", lang="bn"),
+    Feed("BBC Bangla", "https://feeds.bbci.co.uk/bengali/rss.xml", weight=1.5),
+]
+
+# Google News has no Odia edition (it silently falls back to Hindi), so Odia
+# uses the native publishers' own RSS feeds.
+ODIA = [
+    Feed("Dharitri", "https://www.dharitri.com/feed", weight=1.5),
+    Feed("Prameya", "https://www.prameyanews7.com/feed", weight=1.5),
+    Feed("Odisha Bhaskar", "https://odishabhaskar.com/feed/", weight=1.5),
+]
+
+# Tabs whose headlines are not English; skip the English-only filter + scoring.
+REGIONAL_TABS = {"bengali", "odia"}
+
 TAB_FEEDS: dict[str, list[Feed]] = {
+    "bengali": BENGALI,
+    "odia": ODIA,
     "upsc": UPSC,
     "india": MARKETS_INDIA,
     "world": MARKETS_WORLD,
@@ -130,6 +156,14 @@ NAV = [
         "label": "AI",
         "children": [
             {"id": "ai-news", "label": "AI News"},
+        ],
+    },
+    {
+        "id": "regional",
+        "label": "Regional",
+        "children": [
+            {"id": "bengali", "label": "বাংলা"},
+            {"id": "odia", "label": "ଓଡ଼ିଆ"},
         ],
     },
 ]

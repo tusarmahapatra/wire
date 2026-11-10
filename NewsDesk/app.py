@@ -35,7 +35,7 @@ from pydantic import BaseModel
 
 import chat
 import rag
-from feeds import NAV, TAB_FEEDS, Feed
+from feeds import NAV, REGIONAL_TABS, TAB_FEEDS, Feed
 from relevance import score_item
 
 log = logging.getLogger("newsdesk")
@@ -152,10 +152,12 @@ async def fetch_feed(client: httpx.AsyncClient, feed: Feed, tab: str) -> list[It
         if feed.kind == "gnews":
             summary = ""  # Google's summary is a list of link markup, not prose.
 
-        if not is_english(title, summary):
-            continue
-
-        score, tags = score_item(title, summary, tab, feed.weight)
+        if tab in REGIONAL_TABS:
+            score, tags = feed.weight, []  # English vocab scoring doesn't apply
+        else:
+            if not is_english(title, summary):
+                continue
+            score, tags = score_item(title, summary, tab, feed.weight)
         items.append(Item(
             id=fingerprint(title, link),
             tab=tab,
